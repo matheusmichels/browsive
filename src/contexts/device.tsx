@@ -1,9 +1,10 @@
 import React, { createContext, useState, useContext } from 'react';
 
 interface DeviceContextData {
-  navigate: (url: string) => void;
   url: string;
+  setUrl: (url: string) => void;
   zoom: number;
+  setZoom: (zoom: number) => void;
   invalidLink: boolean;
 }
 
@@ -11,13 +12,11 @@ const DeviceContext = createContext<DeviceContextData>({} as DeviceContextData);
 
 export const DeviceProvider: React.FC = ({ children }) => {
   const [url, setUrl] = useState<string>('https://matheusmichels.co/');
-  const [zoom] = useState<number>(0.5);
+  const [zoom, setZoom] = useState<number>(0.5);
   const [invalidLink] = useState<boolean>(false);
 
   return (
-    <DeviceContext.Provider
-      value={{ navigate: setUrl, url, invalidLink, zoom }}
-    >
+    <DeviceContext.Provider value={{ url, setUrl, zoom, setZoom, invalidLink }}>
       {children}
     </DeviceContext.Provider>
   );

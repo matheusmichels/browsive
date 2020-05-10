@@ -3,12 +3,12 @@ import React, { KeyboardEvent, useState } from 'react';
 import { useDevice } from '../../contexts/device';
 
 const SearchBar: React.FC = () => {
-  const [value, setValue] = useState<string>('');
-  const { navigate } = useDevice();
+  const { url, setUrl } = useDevice();
+  const [value, setValue] = useState<string>(url);
 
   function handleNavigate(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Enter') {
-      navigate(value);
+      setUrl(value);
     }
   }
 
@@ -25,8 +25,7 @@ const SearchBar: React.FC = () => {
         color: '#fff',
         paddingLeft: 10,
         paddingRight: 10,
-        borderRadius: 5,
-        border: '1px solid #eee',
+        borderBottom: '1px solid #eee',
       }}
     />
   );

@@ -22,9 +22,10 @@ const Device: React.FC<Props> = ({ title, dimensions }) => {
         width: width * zoom,
         height: height * zoom + 40,
         padding: '10px',
+        userSelect: 'none',
       }}
     >
-      <span style={{ fontSize: 20, color: '#fff' }}>
+      <span style={{ fontSize: 20, color: '#ccc' }}>
         {`${title} - ${width}x${height}`}
       </span>
       <div
@@ -40,7 +41,13 @@ const Device: React.FC<Props> = ({ title, dimensions }) => {
         <iframe
           title={title}
           src={url}
-          style={{ width, height, borderRadius: 10 }}
+          style={{
+            width,
+            height,
+            borderRadius: 10,
+            backgroundColor: '#fff',
+            border: '2px solid #fff',
+          }}
         />
       </div>
     </div>
