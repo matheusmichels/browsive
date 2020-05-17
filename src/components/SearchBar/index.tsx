@@ -1,10 +1,10 @@
 import React, { KeyboardEvent, useState, useEffect } from 'react';
 import Icon from 'react-fontawesome';
 
-import { useDevice } from '../../contexts/device';
+import { useNavigate } from '../../contexts/navigate';
 
 const SearchBar: React.FC = () => {
-  const { url, setUrl } = useDevice();
+  const { url, setUrl } = useNavigate();
   const [value, setValue] = useState<string>(url);
 
   useEffect(() => {
@@ -19,11 +19,8 @@ const SearchBar: React.FC = () => {
 
   return (
     <div style={{ width: '100%' }}>
-      <Icon name="arrow-left" style={{ color: '#fff', fontSize: 20, cursor: 'pointer' }} />
-      <Icon
-        name="arrow-right"
-        style={{ color: '#fff', fontSize: 20, cursor: 'pointer', marginLeft: 10, marginRight: 10 }}
-      />
+      <Icon name="arrow-left" size="lg" style={{ color: '#ccc' }} />
+      <Icon name="arrow-right" size="lg" style={{ color: '#ccc', margin: '0 10px' }} />
       <input
         placeholder="Type your url here"
         value={value}

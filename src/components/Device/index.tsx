@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Loader from 'react-loader-spinner';
+import Icon from 'react-fontawesome';
 
 import { useDevice } from '../../contexts/device';
+import { useNavigate } from '../../contexts/navigate';
+import { Orientation } from '../../@types/orientation.enum';
 
 interface Props {
   title: string;
+  userAgent: string;
+  mobile?: boolean;
   dimensions: {
     width: number;
     height: number;
@@ -14,32 +19,35 @@ interface Props {
 interface WebView extends HTMLWebViewElement {
   src: string;
   getWebContents: () => any;
+  setUserAgent: (userAgent: string) => void;
+  canGoBack: () => boolean;
+  canGoForward: () => boolean;
+  goBack: () => void;
+  goForward: () => void;
 }
 
-interface NavigationEvent extends Event {
-  url: string;
-}
+const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false }) => {
+  const { zoom } = useDevice();
+  const { url, setUrl } = useNavigate();
+  const [orientation, setOrientation] = useState<Orientation>(Orientation.PORTRAIT);
 
-const Device: React.FC<Props> = ({ title, dimensions }) => {
-  const { url, zoom, setUrl } = useDevice();
-  const { width, height } = dimensions;
   const [loading, setLoading] = useState(false);
+
+  let { width, height } = dimensions;
+
+  width = orientation === Orientation.PORTRAIT ? dimensions.width : dimensions.height;
+  height = orientation === Orientation.PORTRAIT ? dimensions.height : dimensions.width;
 
   let webviewRef: HTMLWebViewElement | null = null;
 
   useEffect(() => {
-    function handleNavigate(e: Event) {
-      const event = e as NavigationEvent;
-      event.preventDefault();
-      setUrl(event.url);
-    }
-
     if (webviewRef) {
       const webview = webviewRef as WebView;
-      // webview.addEventListener('update-target-url', console.log);
-      webview.addEventListener('will-navigate', handleNavigate);
       webview.addEventListener('did-start-loading', () => setLoading(true));
-      webview.addEventListener('did-stop-loading', () => setLoading(false));
+      webview.addEventListener('did-stop-loading', () => {
+        setLoading(false);
+        setUrl(webview.src);
+      });
 
       setTimeout(() => {
         webview.getWebContents().executeJavaScript(
@@ -51,12 +59,14 @@ const Device: React.FC<Props> = ({ title, dimensions }) => {
             })`,
         );
       }, 1500);
-
-      return () => {
-        webview.removeEventListener('will-navigate', handleNavigate);
-      };
     }
   }, [setUrl, webviewRef]);
+
+  function handleChangeOrientation() {
+    setOrientation(
+      orientation === Orientation.PORTRAIT ? Orientation.LANDSCAPE : Orientation.PORTRAIT,
+    );
+  }
 
   return (
     <div
@@ -69,7 +79,26 @@ const Device: React.FC<Props> = ({ title, dimensions }) => {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{ fontSize: 20, color: '#ccc', marginRight: 10 }}>
+        {mobile ? (
+          <Icon
+            name="mobile"
+            size="2x"
+            style={{ color: '#ccc', cursor: 'pointer', marginRight: 10 }}
+            onClick={handleChangeOrientation}
+          />
+        ) : (
+          <Icon name="laptop" size="2x" style={{ color: '#ccc', marginRight: 10 }} />
+        )}
+
+        <span
+          style={{
+            fontSize: 20,
+            color: '#ccc',
+            marginRight: 10,
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+          }}
+        >
           {`${title} - ${width}x${height}`}
         </span>
         <Loader type="TailSpin" color="#fff" visible={loading} width={25} height={25} />
@@ -87,6 +116,7 @@ const Device: React.FC<Props> = ({ title, dimensions }) => {
         <webview
           title={title}
           src={url}
+          // useragent={userAgent}
           ref={ref => (webviewRef = ref)}
           style={{
             width,
