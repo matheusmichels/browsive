@@ -12,7 +12,7 @@ const Zoom: React.FC = () => {
       max={0.8}
       step={0.02}
       defaultValue={zoom}
-      onAfterChange={(e) => setZoom(e)}
+      onChange={e => setZoom(e)}
       style={{ width: 200 }}
     />
   );

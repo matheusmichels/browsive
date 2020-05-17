@@ -7,18 +7,28 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
     "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "rc-slider": "^9.2.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-fontawesome": "^1.7.1",
+    "react-loader-spinner": "^3.1.14",
     "react-scripts": "3.4.1",
     "styled-components": "^5.1.0",
     "typescript": "~3.7.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.0",
+    "@types/node": "^12.0.0",
+    "@types/rc-slider": "^8.6.5",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-fontawesome": "^1.6.4",
+    "@types/react-loader-spinner": "^3.1.0",
+    "@types/styled-components": "^5.1.0",
+    "electron": "^8.2.5",
+    "electron-builder": "^22.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -41,12 +51,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@types/rc-slider": "^8.6.5",
-    "@types/react-frame-component": "^4.1.1",
-    "@types/styled-components": "^5.1.0",
-    "electron": "^8.2.5",
-    "electron-builder": "^22.6.0"
   }
 }
