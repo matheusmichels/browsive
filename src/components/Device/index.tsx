@@ -26,8 +26,12 @@ interface WebView extends HTMLWebViewElement {
   goForward: () => void;
 }
 
+export interface MessageEvent extends Event {
+  message: string;
+}
+
 const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false }) => {
-  const { zoom } = useDevice();
+  const { zoom, scroll, setScroll } = useDevice();
   const { url, setUrl } = useNavigate();
   const [orientation, setOrientation] = useState<Orientation>(Orientation.PORTRAIT);
 
@@ -43,6 +47,11 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
   useEffect(() => {
     if (webviewRef) {
       const webview = webviewRef as WebView;
+      webview.addEventListener('console-message', e => {
+        const event = e as MessageEvent;
+        setScroll(parseInt(event.message));
+      });
+
       webview.addEventListener('did-start-loading', () => setLoading(true));
       webview.addEventListener('did-stop-loading', () => {
         setLoading(false);
@@ -51,16 +60,25 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
 
       setTimeout(() => {
         webview.getWebContents().executeJavaScript(
-          `document.addEventListener("scroll", e => {
-              this.top.postMessage({
-                x: window.pageYOffset,
-                y: window.pageXOffset
-              })
-            })`,
+          `document.addEventListener("scroll", () => {
+            console.log(window.pageYOffset);
+          });`,
         );
       }, 1500);
     }
-  }, [setUrl, webviewRef]);
+  }, [setScroll, url, setUrl, webviewRef]);
+
+  useEffect(() => {
+    if (webviewRef) {
+      const webview = webviewRef as WebView;
+
+      const timer = setTimeout(() => {
+        webview.getWebContents().executeJavaScript(`this.scroll(0, ${scroll})`);
+      }, 250);
+
+      return () => clearTimeout(timer);
+    }
+  }, [scroll, webviewRef]);
 
   function handleChangeOrientation() {
     setOrientation(
