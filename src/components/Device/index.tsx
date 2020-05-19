@@ -18,7 +18,7 @@ interface Props {
 
 interface WebView extends HTMLWebViewElement {
   src: string;
-  getWebContents: () => any;
+  getWebContents: () => { executeJavaScript: (script: string) => void };
   setUserAgent: (userAgent: string) => void;
   canGoBack: () => boolean;
   canGoForward: () => boolean;
@@ -47,9 +47,10 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
   useEffect(() => {
     if (webviewRef) {
       const webview = webviewRef as WebView;
+
       webview.addEventListener('console-message', e => {
         const event = e as MessageEvent;
-        setScroll(parseInt(event.message));
+        setScroll(Number(event.message));
       });
 
       webview.addEventListener('did-start-loading', () => setLoading(true));
@@ -60,11 +61,15 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
 
       setTimeout(() => {
         webview.getWebContents().executeJavaScript(
-          `document.addEventListener("scroll", () => {
-            console.log(window.pageYOffset);
-          });`,
+          `
+          var timer = null;
+          document.addEventListener("scroll", () => {
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(() => console.log(window.pageYOffset), 200);
+          });
+          `,
         );
-      }, 1500);
+      }, 500);
     }
   }, [setScroll, url, setUrl, webviewRef]);
 
@@ -72,11 +77,9 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
     if (webviewRef) {
       const webview = webviewRef as WebView;
 
-      const timer = setTimeout(() => {
-        webview.getWebContents().executeJavaScript(`this.scroll(0, ${scroll})`);
-      }, 250);
-
-      return () => clearTimeout(timer);
+      if (webview.getWebContents) {
+        webview.getWebContents()?.executeJavaScript(`this.scroll(0, ${scroll})`);
+      }
     }
   }, [scroll, webviewRef]);
 

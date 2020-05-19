@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 
 interface DeviceContextData {
   zoom: number;
@@ -12,11 +12,6 @@ const DeviceContext = createContext<DeviceContextData>({} as DeviceContextData);
 export const DeviceProvider: React.FC = ({ children }) => {
   const [zoom, setZoom] = useState<number>(0.5);
   const [scroll, setScroll] = useState<number>(0);
-
-  useEffect(() => {
-    // receives scroll events from webviews
-    window.onmessage = (e: any) => console.log(e);
-  }, []);
 
   return (
     <DeviceContext.Provider value={{ zoom, setZoom, scroll, setScroll }}>
