@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import Loader from 'react-loader-spinner';
 import Icon from 'react-fontawesome';
 
@@ -18,7 +18,7 @@ interface Props {
 
 interface WebView extends HTMLWebViewElement {
   src: string;
-  getWebContents: () => { executeJavaScript: (script: string) => void };
+  getWebContentsId: () => number;
   setUserAgent: (userAgent: string) => void;
   canGoBack: () => boolean;
   canGoForward: () => boolean;
@@ -34,6 +34,7 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
   const { zoom, scroll, setScroll } = useDevice();
   const { url, setUrl } = useNavigate();
   const [orientation, setOrientation] = useState<Orientation>(Orientation.PORTRAIT);
+  const [domReady, setDomReady] = useState<boolean>(false);
 
   const [loading, setLoading] = useState(false);
 
@@ -59,29 +60,33 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
         setUrl(webview.src);
       });
 
-      setTimeout(() => {
-        webview.getWebContents().executeJavaScript(
+      webview.addEventListener('dom-ready', () => {
+        setDomReady(true);
+
+        const remote = (window as any).remote;
+        remote.webContents.fromId(webview.getWebContentsId()).executeJavaScript(
           `
-          var timer = null;
-          document.addEventListener("scroll", () => {
-            if (timer) clearTimeout(timer);
-            timer = setTimeout(() => console.log(window.pageYOffset), 200);
-          });
+            var timer = null;
+            document.addEventListener("scroll", () => {
+              if (timer) clearTimeout(timer);
+              timer = setTimeout(() => console.log(window.pageYOffset), 200);
+            });
           `,
         );
-      }, 500);
+      });
     }
   }, [setScroll, url, setUrl, webviewRef]);
 
-  useEffect(() => {
-    if (webviewRef) {
+  useLayoutEffect(() => {
+    if (domReady) {
       const webview = webviewRef as WebView;
+      const remote = (window as any).remote;
 
-      if (webview.getWebContents) {
-        webview.getWebContents()?.executeJavaScript(`this.scroll(0, ${scroll})`);
-      }
+      remote.webContents
+        .fromId(webview.getWebContentsId())
+        .executeJavaScript(`this.scroll(0, ${scroll})`);
     }
-  }, [scroll, webviewRef]);
+  }, [domReady, webviewRef, scroll]);
 
   function handleChangeOrientation() {
     setOrientation(

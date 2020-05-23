@@ -18,6 +18,12 @@
     ],
     "directories": {
       "buildResources": "build"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Development"
     }
   },
   "scripts": {
@@ -28,7 +34,7 @@
     "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "postinstall": "electron-builder install-app-deps",
     "preelectron-pack": "yarn build",
-    "electron-pack": "electron-builder --linux"
+    "electron-pack": "electron-builder --linux --publish never"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -56,7 +62,7 @@
     "@types/react-loader-spinner": "^3.1.0",
     "@types/styled-components": "^5.1.0",
     "concurrently": "^5.2.0",
-    "electron": "^8.2.5",
+    "electron": "^9.0.0",
     "electron-builder": "^22.6.1",
     "wait-on": "^5.0.0"
   },

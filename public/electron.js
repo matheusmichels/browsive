@@ -15,6 +15,7 @@ const createWindow = async () => {
     darkTheme: true,
     autoHideMenuBar: true,
     center: true,
+    icon: path.join(__dirname, '..', 'build', 'icon.png'),
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: true,
