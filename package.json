@@ -3,11 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
+  "author": {
+    "name": "Matheus Michels",
+    "email": "matheusmichels@outlook.com.br",
+    "url": "https://matheusmichels.co"
+  },
+  "build": {
+    "appId": "com.browsive.app",
+    "productName": "Browsive",
+    "copyright": "Copyright © 2020 Matheus Michels",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "build"
+    }
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "postinstall": "electron-builder install-app-deps",
+    "preelectron-pack": "yarn build",
+    "electron-pack": "electron-builder --linux"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "electron-is-dev": "^1.2.0",
+    "electron-serve": "^1.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "rc-slider": "^9.2.4",
     "react": "^16.13.1",
@@ -27,15 +55,10 @@
     "@types/react-fontawesome": "^1.6.4",
     "@types/react-loader-spinner": "^3.1.0",
     "@types/styled-components": "^5.1.0",
+    "concurrently": "^5.2.0",
     "electron": "^8.2.5",
-    "electron-builder": "^22.6.0"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron": "electron ."
+    "electron-builder": "^22.6.1",
+    "wait-on": "^5.0.0"
   },
   "eslintConfig": {
     "extends": "react-app"

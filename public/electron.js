@@ -1,29 +1,37 @@
-const path = require('path');
-const isDev = require('electron-is-dev');
 const { app, BrowserWindow } = require('electron');
+const isDev = require('electron-is-dev');
+const serve = require('electron-serve');
+const path = require('path');
 
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const createWindow = () => {
+const loadURL = serve({ directory: path.join(__dirname, '..', 'build') });
+
+const createWindow = async () => {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
     show: false,
     darkTheme: true,
+    autoHideMenuBar: true,
+    center: true,
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: true,
       webSecurity: false,
       webviewTag: true,
+      preload: __dirname + '/preload.js',
     },
   });
 
   mainWindow.maximize();
-  mainWindow.loadURL(
-    isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`,
-  );
+
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000');
+  } else {
+    await loadURL(mainWindow);
+  }
+
   mainWindow.show();
 };
 
