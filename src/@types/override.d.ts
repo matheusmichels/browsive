@@ -1,9 +1,11 @@
+import { IpcRenderer, Remote } from 'electron';
+
 export {};
 
 declare global {
   interface Window {
-    remote: any;
-    ipcRenderer: any;
+    remote: Remote;
+    ipcRenderer: IpcRenderer;
   }
 
   interface HTMLWebViewElement {

@@ -1,9 +1,9 @@
 import React from 'react';
 
+import { UserAgent } from '../../@types/user-agent.enum';
 import Device from '../../components/Device';
 import SearchBar from '../../components/SearchBar';
 import Zoom from '../../components/Zoom';
-import { UserAgent } from '../../@types/user-agent.enum';
 
 const Home: React.FC = () => {
   return (
@@ -32,7 +32,7 @@ const Home: React.FC = () => {
           title="iPhone XS Max"
           userAgent={UserAgent.IPHONE}
           dimensions={{ width: 414, height: 896 }}
-          mobile={true}
+          mobile
         />
       </div>
     </div>

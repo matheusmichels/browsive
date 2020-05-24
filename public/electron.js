@@ -1,9 +1,10 @@
 const { app, BrowserWindow } = require('electron');
 const isDev = require('electron-is-dev');
 const serve = require('electron-serve');
+const squirrelStartup = require('electron-squirrel-startup');
 const path = require('path');
 
-if (require('electron-squirrel-startup')) {
+if (squirrelStartup) {
   app.quit();
 }
 
@@ -15,13 +16,13 @@ const createWindow = async () => {
     darkTheme: true,
     autoHideMenuBar: true,
     center: true,
-    icon: path.join(__dirname, '..', 'build', 'icon.png'),
+    icon: path.join(__dirname, '..', isDev ? 'public' : 'build', 'icon.png'),
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: true,
       webSecurity: false,
       webviewTag: true,
-      preload: __dirname + '/preload.js',
+      preload: `${__dirname}/preload.js`,
     },
   });
 
@@ -51,7 +52,7 @@ app.on('activate', () => {
 });
 
 // enables to test apps with invalid certificates
-app.on('certificate-error', function (event, webContents, url, error, certificate, callback) {
+app.on('certificate-error', (event, webContents, url, error, certificate, callback) => {
   event.preventDefault();
   callback(true);
 });

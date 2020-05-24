@@ -26,6 +26,7 @@ const SearchBar: React.FC = () => {
         value={value}
         onChange={e => setValue(e.target.value)}
         onKeyPress={handleNavigate}
+        spellCheck={false}
         style={{
           height: 40,
           width: '70%',

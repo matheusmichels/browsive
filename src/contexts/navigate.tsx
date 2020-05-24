@@ -13,7 +13,7 @@ export const NavigateProvider: React.FC = ({ children }) => {
   return <NavigateContext.Provider value={{ url, setUrl }}>{children}</NavigateContext.Provider>;
 };
 
-export function useNavigate() {
+export function useNavigate(): NavigateContextData {
   const context = useContext(NavigateContext);
   return context;
 }

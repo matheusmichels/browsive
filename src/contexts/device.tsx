@@ -20,7 +20,7 @@ export const DeviceProvider: React.FC = ({ children }) => {
   );
 };
 
-export function useDevice() {
+export function useDevice(): DeviceContextData {
   const context = useContext(DeviceContext);
   return context;
 }

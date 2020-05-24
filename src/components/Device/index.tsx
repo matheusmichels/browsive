@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useLayoutEffect } from 'react';
-import Loader from 'react-loader-spinner';
 import Icon from 'react-fontawesome';
+import Loader from 'react-loader-spinner';
 
+import { Orientation } from '../../@types/orientation.enum';
 import { useDevice } from '../../contexts/device';
 import { useNavigate } from '../../contexts/navigate';
-import { Orientation } from '../../@types/orientation.enum';
 
 interface Props {
   title: string;
@@ -124,7 +124,9 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
           title={title}
           src={url}
           // useragent={userAgent}
-          ref={ref => (webviewRef = ref)}
+          ref={ref => {
+            webviewRef = ref;
+          }}
           style={{
             width,
             height,
