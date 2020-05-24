@@ -16,20 +16,6 @@ interface Props {
   };
 }
 
-interface WebView extends HTMLWebViewElement {
-  src: string;
-  getWebContentsId: () => number;
-  setUserAgent: (userAgent: string) => void;
-  canGoBack: () => boolean;
-  canGoForward: () => boolean;
-  goBack: () => void;
-  goForward: () => void;
-}
-
-export interface MessageEvent extends Event {
-  message: string;
-}
-
 const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false }) => {
   const { zoom, scroll, setScroll } = useDevice();
   const { url, setUrl } = useNavigate();
@@ -47,10 +33,9 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
 
   useEffect(() => {
     if (webviewRef) {
-      const webview = webviewRef as WebView;
+      const webview = webviewRef;
 
-      webview.addEventListener('console-message', e => {
-        const event = e as MessageEvent;
+      webview.addEventListener('console-message', event => {
         setScroll(Number(event.message));
       });
 
@@ -61,10 +46,7 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
       });
 
       webview.addEventListener('dom-ready', () => {
-        setDomReady(true);
-
-        const remote = (window as any).remote;
-        remote.webContents.fromId(webview.getWebContentsId()).executeJavaScript(
+        window.remote.webContents.fromId(webview.getWebContentsId()).executeJavaScript(
           `
             var timer = null;
             document.addEventListener("scroll", () => {
@@ -73,20 +55,19 @@ const Device: React.FC<Props> = ({ title, userAgent, dimensions, mobile = false 
             });
           `,
         );
+
+        setDomReady(true);
       });
     }
   }, [setScroll, url, setUrl, webviewRef]);
 
   useLayoutEffect(() => {
-    if (domReady) {
-      const webview = webviewRef as WebView;
-      const remote = (window as any).remote;
-
-      remote.webContents
-        .fromId(webview.getWebContentsId())
+    if (webviewRef && domReady) {
+      window.remote.webContents
+        .fromId(webviewRef.getWebContentsId())
         .executeJavaScript(`this.scroll(0, ${scroll})`);
     }
-  }, [domReady, webviewRef, scroll]);
+  }, [domReady, scroll, webviewRef]);
 
   function handleChangeOrientation() {
     setOrientation(
