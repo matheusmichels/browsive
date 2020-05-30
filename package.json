@@ -38,11 +38,9 @@
     "electron-pack": "electron-builder --linux --publish never"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
     "electron-is-dev": "^1.2.0",
     "electron-serve": "^1.0.0",
+    "electron-devtools-installer": "^3.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "rc-slider": "^9.2.4",
     "react": "^16.13.1",
@@ -54,6 +52,9 @@
     "typescript": "~3.7.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
     "@types/jest": "^24.0.0",
     "@types/node": "^12.0.0",
     "@types/rc-slider": "^8.6.5",

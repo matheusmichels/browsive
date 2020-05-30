@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 const isDev = require('electron-is-dev');
 const serve = require('electron-serve');
 const squirrelStartup = require('electron-squirrel-startup');
@@ -26,15 +27,14 @@ const createWindow = async () => {
     },
   });
 
-  mainWindow.maximize();
-
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
+    await installExtension(REACT_DEVELOPER_TOOLS);
   } else {
     await loadURL(mainWindow);
   }
 
-  mainWindow.show();
+  mainWindow.maximize();
 };
 
 app.on('ready', createWindow);
